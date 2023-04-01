@@ -7,9 +7,9 @@ from src.paper_summary import \
 
 def main():
     """Main function"""
-    paper_url = "https://arxiv.org/pdf/2301.00810v3.pdf?utm_source=pocket_saves"
-    paper_out = "./download/test.pdf"
-    summary_out = "./output/test_summary.txt"
+    paper_url = "https://arxiv.org/ftp/arxiv/papers/2303/2303.11614.pdf?utm_source=pocket_saves"
+    paper_out = "./download/zhuo.pdf"
+    summary_out = "./output/zhuo_summary.txt"
 
     # Load the OpenAI API key
     load_openai_api_key()
