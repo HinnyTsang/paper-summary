@@ -1,3 +1,3 @@
 { pkgs ? import <nixpkgs> { } }:
 
-pkgs.mkShell { buildInputs = [ pkgs.poetry ]; }
+pkgs.mkShell { buildInputs = with pkgs; [ blackbox poetry ]; }
