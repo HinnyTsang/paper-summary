@@ -1,5 +1,7 @@
 # Paper summarizer
 
+Summarize papers with [ChatGPT API](https://chat.openai.com/)
+
 * Copy from [Lucas Soares @ medium](https://medium.com/geekculture/summarize-papers-with-chatgpt-8737ed520a07)
 
 ## How to use
