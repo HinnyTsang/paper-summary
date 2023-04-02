@@ -62,7 +62,7 @@ def get_page_summary(page: PageObject) -> Optional[str]:
     return response
 
 
-def get_paper_summary(paper: str):
+def get_paper_summary(paper: str) -> str:
     """Get the summary of a paper
     :param paper: path to the paper
     :return: summary of the paper
