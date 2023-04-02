@@ -1,13 +1,16 @@
 """Example code for the paper summary script"""
-from src.paper_summary import \
-    download_paper, \
-    get_paper_summary, \
-    load_openai_api_key, \
-    save_paper_summary
+from src.paper_summary import (
+    download_paper,
+    get_paper_summary,
+    load_openai_api_key,
+    save_paper_summary,
+)
+
 
 def main():
     """Main function"""
-    paper_url = "https://arxiv.org/ftp/arxiv/papers/2303/2303.11614.pdf?utm_source=pocket_saves"
+
+    paper_url = "shorturl.at/yBHTV"
     paper_out = "./download/zhuo.pdf"
     summary_out = "./output/zhuo_summary.txt"
 

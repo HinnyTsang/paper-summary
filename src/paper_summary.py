@@ -1,5 +1,7 @@
-"""This module contains functions to download papers and summarize them
-Copy from https://medium.com/geekculture/summarize-papers-with-chatgpt-8737ed520a07
+"""
+This module contains functions to download papers and summarize them
+Copy from medium:
+https://medium.com/geekculture/summarize-papers-with-chatgpt-8737ed520a07
 """
 import logging
 import os
@@ -54,9 +56,7 @@ def get_page_summary(page: PageObject) -> Optional[str]:
                 raw["choices"][0]["message"]["content"],
             )
         except Exception as exception:
-            logging.error(
-                f"OPENAI API call failed with message {exception}, attempting again..."
-            )
+            logging.error(f"OPENAI API call failed with message {exception}.")
             maximum_attempts -= 1
 
     return response

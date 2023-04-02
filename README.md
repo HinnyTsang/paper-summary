@@ -16,7 +16,7 @@ Summarize papers with [ChatGPT API](https://chat.openai.com/)
     * If you are admin user, just decrypt the file with blackbox by the following command
 
         ```bash
-        blackbox_decrypt_all_files
+        make secrets
         ```
 
     * For non-admin user, please create a .env file following the .env.example
