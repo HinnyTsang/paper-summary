@@ -6,12 +6,15 @@ https://medium.com/geekculture/summarize-papers-with-chatgpt-8737ed520a07
 import logging
 import os
 from typing import Optional, cast
+from time import sleep
 import urllib.request
 from PyPDF2 import PageObject, PdfReader
 from dotenv import load_dotenv
 import openai
 
 from .config import OPEN_AI_MODEL, system_message, user_content
+from .models import OpenAPIResponse
+from .utils import build_rate_limiter
 
 logging.basicConfig(level=logging.INFO)
 
@@ -33,9 +36,10 @@ def download_paper(paper_url: str, paper_out: str) -> None:
     urllib.request.urlretrieve(paper_url, paper_out)
 
 
-def get_page_summary(page: PageObject) -> Optional[str]:
+def get_page_summary(page: PageObject, rate_limit: int = 3) -> Optional[str]:
     """Get the summary of a page
     :param page: page to summarize
+    :param rate_limit: rate limit for the API call (requests / minute)
     :return: summary of the page
     """
     page_text = page.extract_text().lower()
@@ -44,20 +48,22 @@ def get_page_summary(page: PageObject) -> Optional[str]:
 
     response: Optional[str] = None
     maximum_attempts: int = 5
+    rate_limiter = build_rate_limiter(rate_limit)
 
     while response is None and maximum_attempts > 0:
         try:
-            raw = openai.ChatCompletion.create(
-                model=OPEN_AI_MODEL,
-                messages=[system_message(), user_content(page_text)],
+            raw: OpenAPIResponse = cast(
+                OpenAPIResponse,
+                openai.ChatCompletion.create(
+                    model=OPEN_AI_MODEL,
+                    messages=[system_message(), user_content(page_text)],
+                ),
             )
-            response = cast(
-                str,
-                raw["choices"][0]["message"]["content"],
-            )
+            response = raw["choices"][0]["message"]["content"]
         except Exception as exception:
             logging.error(f"OPENAI API call failed with message {exception}.")
             maximum_attempts -= 1
+        rate_limiter()  # Sleep for 20 seconds to avoid rate limit (3 / minute)
 
     return response
 
