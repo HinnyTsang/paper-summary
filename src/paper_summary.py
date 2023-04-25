@@ -5,7 +5,7 @@ https://medium.com/geekculture/summarize-papers-with-chatgpt-8737ed520a07
 """
 import logging
 import os
-from typing import Optional, cast
+from typing import Optional, Tuple, cast
 from time import sleep
 import urllib.request
 from PyPDF2 import PageObject, PdfReader
@@ -36,13 +36,21 @@ def download_paper(paper_url: str, paper_out: str) -> None:
     urllib.request.urlretrieve(paper_url, paper_out)
 
 
-def get_page_summary(page: PageObject, rate_limit: int = 3) -> Optional[str]:
+def get_page_text(page: PageObject) -> str:
+    """Get the text of a page
+    :param page: page to get the text from
+    :return: text of the page
+    """
+    page_text = page.extract_text().lower()
+    return page_text
+
+
+def get_page_summary(page_text: str, rate_limit: int = 3) -> Optional[str]:
     """Get the summary of a page
     :param page: page to summarize
     :param rate_limit: rate limit for the API call (requests / minute)
     :return: summary of the page
     """
-    page_text = page.extract_text().lower()
 
     logging.info("Calling OPENAI API...")
 
@@ -68,20 +76,22 @@ def get_page_summary(page: PageObject, rate_limit: int = 3) -> Optional[str]:
     return response
 
 
-def get_paper_summary(paper: str) -> str:
+def get_paper_summary(paper: str) -> Tuple[str, str]:
     """Get the summary of a paper
     :param paper: path to the paper
     :return: summary of the paper
     """
     with open(paper, "rb") as file:
         pdf_reader = PdfReader(file)
-        responses = [get_page_summary(page) for page in pdf_reader.pages]
-        paper_summary = [page for page in responses if page is not None]
+        pages_text = [get_page_text(page) for page in pdf_reader.pages]
 
-    return "\n".join(paper_summary)
+    responses = [get_page_summary(page) for page in pages_text]
+    paper_summary = [page for page in responses if page is not None]
+
+    return "\n".join(pages_text), "\n".join(paper_summary)
 
 
-def save_paper_summary(paper_summary: str, summary_out: str) -> None:
+def save_text_to_file(paper_summary: str, summary_out: str) -> None:
     """Save the summary of a paper to a file
     :param paper_summary: summary of the paper
     :param paper_out: path to save the summary
