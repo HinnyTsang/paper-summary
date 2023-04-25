@@ -18,7 +18,8 @@ def main():
     load_openai_api_key()
 
     # Download the paper
-    download_paper(paper_url, paper_out)
+    if paper_url is not None:
+        download_paper(paper_url, paper_out)
 
     # Get the summary of the paper
     paper_summary = get_paper_summary(paper_out)
